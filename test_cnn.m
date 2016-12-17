@@ -2,13 +2,13 @@ function test_cnn(upboundepoch)
 % testing of the cnn
 run(fullfile('D:\MEGA\Programs\MatConvNet', 'matconvnet-1.0-beta22', 'matlab', 'vl_setupnn.m'));
 
-imdir = fullfile('D:\MEGA\Programs\MatConvNet\Data Bases\MyBase\Princeton v.2\');
+imdir = fullfile('D:\MEGA\Programs\MatConvNet\Data Bases\MyBase\Princeton v.1\');
 klassdir = fullfile(char(cd), 'data', 'testdesc\');
 expdir = fullfile(char(cd), 'RESULT\');
 
 %upboundepoch = 10; 
 
-for epochNum = 1 : upboundepoch %number of launched epoch
+for epochNum = 7 : 12%upboundepoch %number of launched epoch
 
     epochName = sprintf('net-epoch-%d.mat', epochNum);
     netdir = load(fullfile(char(cd), 'data', 'imdbF', epochName));
@@ -17,9 +17,9 @@ for epochNum = 1 : upboundepoch %number of launched epoch
     net.layers{end}.type = 'softmax';
     net = vl_simplenn_tidy(net) ;
 
-    num_of_classes = 2; %number of classes
+    num_of_classes = 3; %number of classes
 
-    result = cell(50, num_of_classes);
+    result = cell(80, num_of_classes);
 
     for cl_i = 1 : num_of_classes
 
@@ -60,7 +60,7 @@ for epochNum = 1 : upboundepoch %number of launched epoch
     fileID = fopen(fullfile(expdir, expfn),'w');
     fprintf('%s: Writing result on epoch %d.\n', mfilename, epochNum)
     
-    formatSpec = '%20s | %20s \n';
+    formatSpec = '%20s | %20s | %20s\n';
     fprintf(fileID, formatSpec, result{1,:});
     fprintf(fileID, '\n');
 
