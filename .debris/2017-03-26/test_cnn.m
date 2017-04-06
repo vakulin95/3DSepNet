@@ -2,13 +2,13 @@ function test_cnn(upboundepoch)
 % testing of the cnn
 run(fullfile('D:\MEGA\Programs\MatConvNet', 'matconvnet-1.0-beta22', 'matlab', 'vl_setupnn.m'));
 
-imdir = fullfile('D:\files\SI_MC_db\');
+imdir = fullfile('D:\MEGA\Programs\MatConvNet\Data Bases\MyBase\Princeton v.1\');
 klassdir = fullfile(char(cd), 'data', 'testdesc\');
 expdir = fullfile(char(cd), 'RESULT\');
 
 %upboundepoch = 10; 
 
-for epochNum = 1 : upboundepoch %number of launched epoch
+for epochNum = 7 : 12%upboundepoch %number of launched epoch
 
     epochName = sprintf('net-epoch-%d.mat', epochNum);
     netdir = load(fullfile(char(cd), 'data', 'imdbF', epochName));

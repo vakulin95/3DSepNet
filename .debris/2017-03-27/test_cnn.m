@@ -8,7 +8,7 @@ expdir = fullfile(char(cd), 'RESULT\');
 
 %upboundepoch = 10; 
 
-for epochNum = 1 : upboundepoch %number of launched epoch
+for epochNum = 7 : 12%upboundepoch %number of launched epoch
 
     epochName = sprintf('net-epoch-%d.mat', epochNum);
     netdir = load(fullfile(char(cd), 'data', 'imdbF', epochName));

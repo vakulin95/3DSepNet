@@ -3,7 +3,7 @@ function batch = createbatch()
 run(fullfile('D:\MEGA\Programs\MatConvNet', 'matconvnet-1.0-beta22', 'matlab', 'vl_setupnn.m'));
 
 metadir = fullfile(vl_rootnn, 'MyNet', 'data', 'descriptors\');
-descdir = fullfile('D:\files\SI_MC_db\'); %directory with images
+descdir = fullfile('D:\MEGA\Programs\MatConvNet\Data Bases\MyBase\Princeton v.1\'); %directory with images
 outdir = fullfile(vl_rootnn, 'MyNet', 'data', 'batches\');
 
 batch.data = [];
@@ -28,7 +28,7 @@ for num_of_Batch = 0 : 5
         indinmatfile = 1;
         for i = begin_ind : end_ind
                      
-            imfile = sprintf('m%d.bmp', imn(i));
+                imfile = sprintf('m%d.bmp', imn(i));
 
             im = imread([descdir, imfile],'bmp');
             im = imresize(im, [32 32]) ;
@@ -72,9 +72,9 @@ for num_of_Batch = 0 : 5
         save(fullfile(outdir, batch_name), '-struct', 'batch');
     end
     
-    %clear idb;
-    %clear batch;
-    %clear batch_name;
+    clear idb;
+    clear batch;
+    clear batch_name;
 end
 
 batchesMeta(metadir, outdir)

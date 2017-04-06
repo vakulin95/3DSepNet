@@ -1,0 +1,9 @@
+$ cat .gitignore
+
+#GitIgnore file 7.04.17
+
+*.[oa]
+*.exe
+*.out
+*.gch
+*.mat

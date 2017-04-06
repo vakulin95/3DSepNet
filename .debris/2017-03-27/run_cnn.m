@@ -51,7 +51,7 @@ end
 fclose(fileID);
 
 %result writing
-test_cnn(net.meta.trainOpts.numEpochs);
+%test_cnn(net.meta.trainOpts.numEpochs);
 
 function fn = getBatch(opts)
  fn = @(x,y) getSimpleNNBatch(x,y);

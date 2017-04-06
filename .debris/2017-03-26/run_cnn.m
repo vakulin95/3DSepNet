@@ -14,7 +14,7 @@ opts.contrastNormalization = true ;
 opts.train.gpus = [1];
 
 %model of cnn
-net = cnn_init();
+net = cnn_init_1();
 
 %data
 if exist(opts.imdbPath, 'file')
