@@ -1,3 +1,0 @@
-2 classes 
-120 models per class
-not repeated

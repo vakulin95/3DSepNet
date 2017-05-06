@@ -1,4 +1,4 @@
-function [net, info] = cnn_run(varargin)
+function [net, info] = run_cnn(varargin)
 %CNN_MNIST  Demonstrates MatConvNet on MNIST
 
 run(fullfile(fileparts(mfilename('fullpath')),...
@@ -23,7 +23,7 @@ opts.train.gpus = [1];
 %                                                         Prepare data
 % --------------------------------------------------------------------
 
-net = cnn_mnist_init('batchNormalization', opts.batchNormalization, ...
+net = init_cnn('batchNormalization', opts.batchNormalization, ...
                      'networkType', opts.networkType) ;
 
 if exist(opts.imdbPath, 'file')
@@ -35,7 +35,8 @@ else
 end
 
 %fix it
-net.meta.classes.name = arrayfun(@(x)sprintf('%d',x),1:3,'UniformOutput',false) ;
+%net.meta.classes.name = arrayfun(@(x)sprintf('%d',x),1:3,'UniformOutput',false) ;
+net.meta.classes.name = imdb.meta.classes(1,:);
 
 % --------------------------------------------------------------------
 %                                                                Train
@@ -99,7 +100,7 @@ for iclass = 1:num_of_classes
     
     for idat = 1:num_si_per_cl
         %fname = sprintf('%d.dat', imn(idat));
-        fname = '1.dat';
+        fname = sprintf('%d.dat', mod(idat, 7) + 1);
         M = zeros(28, 28);
         M = importdata(fullfile(opts.dataDir, fname));
         si_num = (iclass - 1) * num_si_per_cl + idat; 
@@ -108,23 +109,38 @@ for iclass = 1:num_of_classes
     end
 end
 
+%нужно отделить тестовую выборку от обучающей и перемешать по отдельности
 idb = randperm(numel(LABELS()));
 LABELS(1:end) = LABELS(idb);
-SI(:,:,1:end) = SI(:,:,idb)
+SI(:,:,1:end) = SI(:,:,idb);
 
 sitn = int16(num_of_si / 6);
-set = [ones(1,num_of_si - sitn) 3*ones(1,sitn)];
+%countVal(LABELS, num_of_si, sitn)
+set = [ones(1, num_of_si - sitn) 3*ones(1,sitn)];
 data = single(reshape(SI,28,28,1,[]));
 dataMean = mean(data(:,:,:,set == 1), 4);
 data = bsxfun(@minus, data, dataMean) ;
 
 imdb.images.data = data ;
 imdb.images.data_mean = dataMean;
-% %fix labels---------------------------------------
-% y1 = y1 - ones(size(y1));
-% y2 = y2 - ones(size(y2));
-%-------------------------------------------------
 imdb.images.labels = LABELS;
 imdb.images.set = set ;
 imdb.meta.sets = {'train', 'val', 'test'} ;
-imdb.meta.classes = arrayfun(@(x)sprintf('%d',x),1:3,'uniformoutput',false) ;
+
+kln = importdata(fullfile(opts.descPath, 'meta.dat'))';
+imdb.meta.classes = kln;
+
+
+function res = countVal(LABELS, num_of_si, sitn)
+    
+    res = zeros(1, 3);    
+    for i = (num_of_si - sitn):num_of_si
+        switch LABELS(i)
+            case 1
+                res(1, 1) = res(1, 1) + 1;
+            case 2
+                res(1, 2) = res(1, 2) + 1;
+            case 3
+                res(1, 3) = res(1, 3) + 1;
+        end
+    end
