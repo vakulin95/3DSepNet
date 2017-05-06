@@ -7,7 +7,7 @@ klassdir = fullfile(char(cd), 'data', 'testdesc');
 expdir = fullfile(char(cd), 'RESULT');
 
 %upboundepoch = 10; 
-%epoches = [20; 25];
+
 for epochNum = epoches(1) : epoches(2) %number of launched epoch
 
     epochName = sprintf('net-epoch-%d.mat', epochNum);
@@ -19,7 +19,7 @@ for epochNum = epoches(1) : epoches(2) %number of launched epoch
 
     num_of_classes = 3; %number of classes
 
-    result = cell(21, num_of_classes);
+    result = cell(80, num_of_classes);
 
     for cl_i = 1 : num_of_classes
 
@@ -69,23 +69,6 @@ for epochNum = epoches(1) : epoches(2) %number of launched epoch
     for row = 2:nrows
         fprintf(fileID, formatSpec, result{row,:});
     end
-    
-    resnum = zeros(3, 1);
-    for i = 2 : nrows
-        if strcmp(result{i,1}, 'airplane aircraft')
-            resnum(1, 1) = resnum(1, 1) + 1;
-        end
-        
-        if strcmp(result{i,2}, 'furniture')
-            resnum(2, 1) = resnum(2, 1) + 1;
-        end
-        
-        if strcmp(result{i,3}, 'human')
-            resnum(3, 1) = resnum(3, 1) + 1;
-        end
-    end
-    
-    fprintf(fileID, '%20d | %20d | %20d\n', resnum(1, 1), resnum(2, 1), resnum(3, 1));
 
     fclose(fileID);
 

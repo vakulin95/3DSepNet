@@ -14,13 +14,9 @@ opts.expDir = fullfile(char(cd), 'data', 'export') ;
 opts.dataDir = fullfile('D:\files\SI_MC_db_dat\') ;
 opts.imdbPath = fullfile(opts.expDir, 'imdb.mat');
 opts.descPath = fullfile(char(cd), 'data', 'descriptors');
-opts.resPath = fullfile(char(cd), 'RESULT');
 opts.train = struct() ;
 opts = vl_argparse(opts, varargin) ;
 opts.train.gpus = [1];
-
-cmd_rmdir(opts.expDir);
-cmd_rmdir(opts.resPath);
 
 % --------------------------------------------------------------------
 %                                                         Prepare data
@@ -49,15 +45,14 @@ net.meta.classes.name = imdb.meta.classes(1,:);
   'val', find(imdb.images.set == 3)) ;
 
 %error file writing
-mkdir(opts.resPath) ;
-fileID = fopen(fullfile(opts.resPath, 'net_error_result.dat'),'w');
+fileID = fopen(fullfile(char(cd), 'RESULT', 'net_error_result.dat'),'w');
 
 formatSpec = '%f %f \n';
 
 fprintf(fileID, '# err\n# train   val\n');
 %fprintf(fileID, '\n');
 
-result = {info.train.top1err; info.val.top1err}';
+result = {info.train.objective; info.val.objective}';
 
 [nrows, ncols] = size(result);
 for row = 1:nrows
@@ -67,7 +62,7 @@ end
 fclose(fileID);
 
 %result writing
-test_cnn([20; 25]);
+test_cnn([15; 25]);
 
 function fn = getBatch()
 % --------------------------------------------------------------------
@@ -171,16 +166,3 @@ function res = countVal(LABELS, num_of_si, sitn)
                 res(1, 3) = res(1, 3) + 1;
         end
     end
-    
-function [ st, msg ] = cmd_rmdir(folderspec)       
-%   cmd_rmdir removes a directory and its contents 
-%   
-%   Removes all directories and files in the specified directory in
-%   addition to the directory itself.  Used to remove a directory tree.
-%   See also: xtests\generic_utilies_test.m
-           
-    narginchk( 1, 1 )
-    
-    dos_cmd = sprintf( 'rmdir /S /Q "%s"', folderspec );
-    
-    [ st, msg ] = system( dos_cmd );
