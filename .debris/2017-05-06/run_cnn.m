@@ -53,26 +53,6 @@ end
   opts.train, ...
   'val', find(imdb.images.set == 3)) ;
 
-%error file writing
-fileID = fopen(fullfile(char(cd), 'RESULT', 'net_error_result.dat'),'w');
-
-formatSpec = '%f %f \n';
-
-fprintf(fileID, '# err\n# train   val\n');
-%fprintf(fileID, '\n');
-
-result = {info.train.objective; info.val.objective}';
-
-[nrows, ncols] = size(result);
-for row = 1:nrows
-    fprintf(fileID, formatSpec, result{row,:});
-end
-
-fclose(fileID);
-
-%result writing
-test_cnn([15; 20]);
-
 function fn = getBatch(opts)
 % --------------------------------------------------------------------
 switch lower(opts.networkType)
@@ -105,12 +85,11 @@ function imdb = getMnistImdb(opts)
 % Preapre the imdb structure, returns image data with mean image subtracted
 
 num_of_classes = 3;
-num_si_per_cl = 160;
-num_of_si = num_si_per_cl * num_of_classes * 4;
+num_si_per_cl = 120;
+num_of_si = num_si_per_cl * num_of_classes;
 
-SI = int16(zeros(28, 28, num_of_si));
+SI = zeros(28, 28, num_of_si);
 LABELS = zeros(1, num_of_si);
-si_num = logical(1);
 for iclass = 1:num_of_classes
     
     klass = sprintf('%d.dat', iclass);
@@ -120,35 +99,13 @@ for iclass = 1:num_of_classes
     imn(1:end) = imn(idx);
     
     for idat = 1:num_si_per_cl
-        fname = sprintf('m%d.dat', imn(idat));
-        %fname = sprintf('%d.dat', mod(idat, 7) + 1);
+        %fname = sprintf('%d.dat', imn(idat));
+        fname = sprintf('%d.dat', mod(idat, 7) + 1);
         M = zeros(28, 28);
-        r = fullfile(opts.dataDir, fname);
         M = importdata(fullfile(opts.dataDir, fname));
-        %si_num = (iclass - 1) * num_si_per_cl + idat; 
-        %SI(:, :, si_num) = M;
-        %LABELS(1, si_num) = iclass;
-        
-        maxel = max(max(M));
-        M_ = int16((M(:,:) / maxel) * 255);
-        SI(:, :, si_num) = M_;
+        si_num = (iclass - 1) * num_si_per_cl + idat; 
+        SI(:, :, si_num) = M;
         LABELS(1, si_num) = iclass;
-        si_num = si_num + 1;
-        
-        M1 = rot90(rot90(M_));
-        SI(:, :, si_num) = M1;
-        LABELS(1, si_num) = iclass;
-        si_num = si_num + 1;
-        
-        M2 = -1 * (M_(:,:) - 255);
-        SI(:, :, si_num) = M2;
-        LABELS(1, si_num) = iclass;
-        si_num = si_num + 1;
-        
-        M3 = rot90(rot90(M2));
-        SI(:, :, si_num) = M3;
-        LABELS(1, si_num) = iclass;
-        si_num = si_num + 1;
     end
 end
 
